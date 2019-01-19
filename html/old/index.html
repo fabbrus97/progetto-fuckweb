@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+	<style>
+		/*animazione caricamento*/
+		/*loading animation*/
+		.spinner {
+			z-index: 1;
+			position: absolute;
+			/*width: 40px;
+			height: 40px;*/
+			width: 10%;
+			height: 10%;
+			background-color: #333;
+
+			/*margin: 100px auto;*/
+			margin: 45%;
+			-webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+			animation: sk-rotateplane 1.2s infinite ease-in-out;
+		}
+
+		@-webkit-keyframes sk-rotateplane {
+			0% { -webkit-transform: perspective(120px) }
+			50% { -webkit-transform: perspective(120px) rotateY(1800deg) }
+			100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+		}
+
+		@keyframes sk-rotateplane {
+			0% {
+				transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+				-webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+			} 50% {
+				transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+				-webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+			} 100% {
+				transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+				-webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+			}
+		}
+	</style>
+	<style>
+		* {
+			padding: 2px;
+		}
+
+		#ytplayer {
+			width: 100%;
+			height: calc(100vw/4);
+			/* idk how it works */
+		}
+
+		.SuggestedVideos {
+			clear: both;
+			margin: auto;
+			padding-top: 30px;
+			width: 80%;
+		}
+
+		.active {
+			font-weight: bold;
+		}
+
+		/* Barra di ricerca a destra*/
+
+		.search-bar {
+			float: right;
+		}
+
+		.container {
+			max-width: none;
+			width: 90%;
+		}
+
+		.tab-pane {
+			font-weight: normal;
+		}
+
+		#myTabContent {
+			margin: 10px;
+		}
+
+		.card{
+			background-color: #f5f5f5;
+			cursor: pointer;
+		}
+
+		.card-image-top{
+			z-index: 1;
+		}
+
+		.card-body{
+			z-index: 1;
+		}
+
+		.card-title {
+			font-size: 12px;
+			font-weight: bold;
+			color: #424242;
+		}
+
+		.card-text {
+			font-size: 10px;
+			font-weight: normal;
+			color: #616161;
+		}
+
+		.video-info-tabs {
+			padding: 8px;
+		}
+
+		.card {
+			margin: 10px;
+
+		}
+
+		/* cambio il colore alle freccie */
+
+		.carousel-control-prev-icon {
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+		}
+
+		.carousel-control-next-icon {
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+		}
+
+		/* quando lo schermo è abbstanza piccolo posiziona al centro le card */
+
+		@media (min-width: @screen-sm-min) {
+			.card {
+				margin: auto;
+			}
+		}
+	</style>
+
+</head>
+
+<body>
+	<!-- Title bar -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">Ciabatta&apos;s tube</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo02">
+			<!-- Search form -->
+			<form class="search-bar form-inline my-2 justify-content-end">
+				<input class="form-control mr-sm-2" type="search" placeholder="Search">
+				<button class="search-button btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		</div>
+	</nav>
+
+	<!-- Menu -->
+	<ul class="nav justify-content-center">
+		<li class="nav-item">
+			<a class="nav-link" href="#">Info</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="#">Buy</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="#">Catalog</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="#">Stats</a>
+		</li>
+	</ul>
+
+	<div class="container">
+		<div class="row">
+			<!-- The player -->
+			<div class="col-lg-6">
+				<iframe id="ytplayer" type="text/html" src="http://www.youtube.com/embed/M7lc1UVf-VE?autoplay=0" frameborder="0"></iframe>
+			</div>
+			<!-- Video description -->
+			<div class="col-lg-6">
+				<div id="current-video-description">
+					<h3 id="current-video-title">Title</h3><br>
+				</div>
+				<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="pills-info-tab" data-toggle="pill" href="#pills-info" role="tab" aria-controls="pills-info" aria-selected="false">Info</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="pills-description-tab" data-toggle="pill" href="#pills-description" role="tab" aria-controls="pills-description" aria-selected="true">Description</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="pills-comments-tab" data-toggle="pill" href="#pills-comments" role="tab" aria-controls="pills-comments" aria-selected="false">Comments</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="pills-wikipedia-tab" data-toggle="pill" href="#pills-wikipedia" role="tab" aria-controls="pills-wikipedia" aria-selected="false">Wikipedia</a>
+					</li>
+				</ul>
+				<div class="tab-content" id="pills-tabContent">
+					<div class="tab-pane fade show active" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab"><p id="current">Artist, Album, Year, Youtube</p></div>
+					<div class="tab-pane fade" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab"></div>
+					<div class="tab-pane fade" id="pills-comments" role="tabpanel" aria-labelledby="pills-comments-tab">...</div>
+					<div class="tab-pane fade" id="pills-wikipedia" role="tabpanel" aria-labelledby="pills-wikipedia-tab">...</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--
+	Categorie di video suggeriti quando vengono cliccate devono cambiare
+	le immagini i titoli e le descrizioni dei video suggeriti
+	-->
+	<div class="SuggestedVideos">
+		<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="pills-random-tab" data-toggle="pill" href="#pills-random" role="tab" aria-controls="pills-random" aria-selected="true">Random</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-search-tab" data-toggle="pill" href="#pills-search" role="tab" aria-controls="pills-search" aria-selected="false">Search</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-related-tab" data-toggle="pill" href="#pills-related" role="tab" aria-controls="pills-related" aria-selected="false">Related</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-recent-tab" data-toggle="pill" href="#pills-recent" role="tab" aria-controls="pills-recent" aria-selected="false">Recent</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-popular-tab" data-toggle="pill" href="#pills-popular" role="tab" aria-controls="pills-popular" aria-selected="false">Popular</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-fvitali-tab" data-toggle="pill" href="#pills-fvitali" role="tab" aria-controls="pills-fvitali" aria-selected="false">Fvitali</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="pills-similar-tab" data-toggle="pill" href="#pills-similar" role="tab" aria-controls="pills-similar" aria-selected="false">Similar</a>
+			</li>
+		</ul>
+	</div>
+
+	<!--
+	Outside all other divs becasue this way will use all the space of the page
+	(it doesn't need to chage trough bootstrap will be used proper js functions instead
+	to change the displayed data based on the selected category)
+	-->
+	<center>
+		<div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
+			<div class="carousel-inner w-100 row" role="listbox">
+
+				<div class="carousel-item row no-gutters active">
+					<!-- Emty for the arrows -->
+					<div class="col-lg-1 float-left">
+					</div>
+
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-0" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-0" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-0">Song title</h5>
+								<p class="card-text" id="description-suggestion-0">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-1" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+
+							<img class="card-image-top img-fluid" id="image-suggestion-1" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-1">Song title</h5>
+								<p class="card-text" id="description-suggestion-1">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-2" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-2" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-2">Song title</h5>
+								<p class="card-text" id="description-suggestion-2">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-3" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-3" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-3">Song title</h5>
+								<p class="card-text" id="description-suggestion-3">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-4" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-4" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-4">Song title</h5>
+								<p class="card-text" id="description-suggestion-4">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<!-- Emty for the arrows -->
+					<div class="col-lg-1 float-left">
+					</div>
+				</div>
+
+				<div class="carousel-item row no-gutters">
+					<!-- Emty for the arrows -->
+					<div class="col-lg-1 float-left">
+					</div>
+
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-5" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-5" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-5">Song title</h5>
+								<p class="card-text" id="description-suggestion-5">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-6" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-6" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-6">Song title</h5>
+								<p class="card-text" id="description-suggestion-6">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-7" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-7" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-7">Song title</h5>
+								<p class="card-text" id="description-suggestion-7">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-8" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-8" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-8">Song title</h5>
+								<p class="card-text" id="description-suggestion-8">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 float-left">
+						<div class="card border-light mb-3" id="video-suggestion-9" style="max-width: 18rem;height: 20rem;">
+							<div class="spinner"></div>
+							<img class="card-image-top img-fluid" id="image-suggestion-9" src="images/image.svg">
+							<div class="card-body text-primary">
+								<h5 class="card-title" id="title-suggestion-9">Song title</h5>
+								<p class="card-text" id="description-suggestion-9">Reason why the song is suggested... bla bla bla</p>
+							</div>
+						</div>
+					</div>
+					<!-- Emty for the arrows -->
+					<div class="col-lg-1 float-left">
+					</div>
+				</div>
+			</div>
+			<a class="carousel-control-prev" href="#recipeCarousel" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" href="#recipeCarousel" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>
+	</center>
+	<div id="yt-result"></div>
+
+</body>
+<script text="text/javascript"> //YouTube js library
+	//YOUTUBE API REQUESTS
+	var key = "AIzaSyDiyf08d4-RIa-JK8uBPqEFcwxZPoYZ-to";
+	var random_search_url = "https://www.googleapis.com/youtube/v3/search?part=id&maxResults=50&type=video&videoCategoryId=10&videoEmbeddable=true&videoSyndicated=true&order=viewCount&key="+key+"&q=";
+	var search_url = "https://www.googleapis.com/youtube/v3/search?key="+key+"&part=snippet&maxResults=10&type=video&videoEmbeddable=true&videoSyndicated=true&order=viewCount&videoCategoryId=10";
+	var list_url = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=10";
+	var single_video_url = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=10&id=";
+	//https://www.googleapis.com/youtube/v3/search?part=id&maxResults=50&type=video&q=sfdg-&videoCategoryId=10&key=AIzaSyB4_hXsswShx0-0Mps9xM7Ao97d2m8xfYE
+	//send a request to youtube
+	function YouTubeRequest(theUrl, callback){
+		$.ajax({
+			url: theUrl,
+			data: {
+				format: 'json'
+			},
+			error: function() {
+				document.write("error");
+			},
+			dataType: 'json',
+			success: function(data) {
+				//alert(JSON.stringify(data));
+				callback(data);
+			},
+			type: 'GET'
+		});
+	}
+	function A(data){
+		if(data.items.length<10){
+			YouTubeRequest(random_search_url+makeid(),A);
+		}else{
+			//alert("ok");
+			var videos_info = [];
+			function B(data){
+				//alert(JSON.stringify(data));
+				var new_info = [];
+				new_info.image = data.items[0].snippet.thumbnails.medium.url;
+				new_info.title = data.items[0].snippet.title;
+				new_info.description = data.items[0].snippet.description;
+				new_info.videoId = data.items[0].id;
+				videos_info.push(new_info);
+				if(videos_info.length==10){
+					addYouTubeInformationsRefined(videos_info);
+				}
+			}
+			for (var i = 0; i < 10; i++) {
+				//alert(JSON.stringify(data));
+				try{
+					var query = JSON.stringify(data.items[i].id.videoId);
+				}catch{
+					alert(JSON.stringify(data));
+				}
+				query = query.substring(1,query.length-1);
+				//alert("im here: "+query);
+				YouTubeRequest(single_video_url+query,B);
+			}
+		}
+	}
+	function makeid() {
+		var text = "";
+		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
+
+		for (var i = 0; i < 5; i++)
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+		return text;
+	}
+	function youTubeRandomVideos(){
+		YouTubeRequest(random_search_url+makeid(),A);
+	}
+</script>
+<script type="text/javascript">
+	var current_video = "";
+	var current_category = 0;
+	var content = ["", "", ""];
+	var suggested_videos = ["", "", "", "", "", "", "", "", "", ""];
+
+	function changeVideo(new_video) {
+		changeIndex(true);
+		current_video = new_video;
+		//var new_video = 'lX44CAz-JhU';
+		//var new_video = 'Q4bsDgZa4ns';
+		var video_url = '<iframe id="ytplayer" type="text/html" src="http://www.youtube.com/embed/' +
+		new_video + '?autoplay=1" frameborder="0" /></iframe>';
+		//alert(video_url);
+		document.getElementById("ytplayer").outerHTML = video_url;
+		//TODO: load new content & suggested videos (only for the selected category)
+	}
+	//carica i nuovi contenuti nella pagina sovrascrivendo quelli vecchi
+	//se non sono impostati disabilita il pulsante
+	function changeContent(new_content) {
+		if (new_content) {
+			if (new_content[0]) {
+				document.getElementById("pills-description").innerHTML = new_content[0];
+			} else {
+				document.getElementById("pills-description-tab").classList.add("disabled");
+			}
+			if (new_content[1]) {
+				document.getElementById("pills-comments").innerHTML = new_content[1];
+			} else {
+				document.getElementById("pills-comments-tab").classList.add("disabled");
+			}
+			if (new_content[2]) {
+				document.getElementById("pills-wikipedia").innerHTML = new_content[2];
+			} else {
+				document.getElementById("pills-wikipedia-tab").classList.add("disabled");
+			}
+		} else {
+			document.getElementById("pills-description").innerHTML =
+			'Error loading new content, try loading <a href="http://site1824.tw.cs.unibo.it?v=Q4bsDgZa4ns">this</a> page';
+			document.getElementById("pills-description-tab").classList.add("disabled");
+			document.getElementById("pills-comments-tab").classList.add("disabled");
+			document.getElementById("pills-wikipedia-tab").classList.add("disabled");
+		}
+	}
+
+	//new_data is JSON
+	function addYouTubeInformations(new_data, refined) {
+		changeIndex(false);
+		for (let i = 0; i < 10; i++) {
+			//alert("image-suggestion-"+i.toString());
+			document.getElementById("image-suggestion-"+i.toString()).outerHTML=
+			'<img class="card-image-top img-fluid" id="image-suggestion-'+i+'" src='+
+			JSON.stringify(new_data.items[i].snippet.thumbnails.medium.url)+'>';
+			//alert("title-suggestion-"+i.toString());
+			document.getElementById("title-suggestion-"+i.toString()).innerHTML=JSON.stringify(new_data.items[i].snippet.title);
+			//alert("description-suggestion-"+i.toString());
+			document.getElementById("description-suggestion-"+i.toString()).innerHTML=JSON.stringify(new_data.items[i].snippet.description);
+		}
+	}
+	//require new_suggestions[i].image
+	//require new_suggestions[i].title
+	//require new_suggestions[i].description
+	function addYouTubeInformationsRefined(new_data) {
+		changeIndex(false);
+		for (let i = 0; i < 10; i++) {
+			document.getElementById("video-suggestion-"+i).onclick = function(){changeVideo(new_data[i].videoId); youTubeRandomVideos();};
+			//alert("image-suggestion-"+i.toString());
+			document.getElementById("image-suggestion-"+i.toString()).outerHTML=
+			'<img class="card-image-top img-fluid" id="image-suggestion-'+i+'" src='+
+			new_data[i].image+'>';
+			//alert("title-suggestion-"+i.toString());
+			document.getElementById("title-suggestion-"+i.toString()).innerHTML=new_data[i].title;
+			//alert("description-suggestion-"+i.toString());
+			document.getElementById("description-suggestion-"+i.toString()).innerHTML=new_data[i].description;
+		}
+	}
+	//aggiorna i video consigliati
+	//la categoria definisce l'algoritmo da usare
+	function getContent(video, category) { //Ajax -> addYouTubeInformations(suggested_videos, current_category);
+		//suggested_videos = ...
+		var suggested_videos;
+
+		//TEST: load some videos
+		//YouTubeRequest(search_url,addYouTubeInformations);
+		youTubeRandomVideos();
+	}
+
+	function LoadNewVideo(new_video){
+		current_video = new_video; //update the current video reference
+		changeVideo(current_video); //change the shown video in the player
+		getContent(current_video, current_category);
+	}
+	function LoadNewCategory(new_category){
+		current_category = new_category;
+	}
+	$(document).ready(function() {
+		//var element = document.getElementById("pills-wikipedia-tab");
+		//element.classList.add("disabled");
+		getContent(current_video, 1);
+	});
+	//carico il video passato come parametro
+	var url_string = window.location.href;
+	var url = new URL(url_string);
+	var video = url.searchParams.get("v");
+	changeIndex(true);
+	if (video) {
+		changeVideo(video);
+	}
+
+	function changeIndex(up){
+		if(up){
+			$('.spinner').css("z-index","1");
+			$('.card-image-top').css("z-index","-1");
+			$('.card-body').css("z-index","-1");
+			//alert("down");
+		}else{
+			$('.spinner').css("z-index","-1");
+			$('.card-body').css("z-index","1");
+			$('.card-image-top').css("z-index","1");
+			//alert("up");
+		}
+	}
+
+	var show = function(data){
+		for (var i = 0; i < 10; i++) {
+			suggested_videos[i].title = JSON.stringify(data.items[0].snippet.title);
+			suggested_videos[i].description = JSON.stringify(data.items[0].snippet.description);
+			suggested_videos[i].image = JSON.stringify(data.items[0].snippet.thumbnails.medium.url);
+		}
+	}
+</script>
+
+</html>

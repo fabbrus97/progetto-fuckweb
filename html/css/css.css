@@ -1,0 +1,200 @@
+* {
+	padding: 2px;
+	font-family: 'Noto Sans', sans-serif;
+}
+
+#the_player {
+	width: 100%;
+	height: calc(100vw/3.3);
+	/* idk how it works */
+	border: 5px;
+	-webkit-border-image: -webkit-radial-gradient(center, circle, #CDCDCD, white) 0 ;
+}
+
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	max-height: calc(100vw/5);
+}
+
+html{
+	padding: 0;
+}
+
+body{
+	padding: 0;
+}
+
+
+.videoList{
+	list-style: none;
+}
+
+.navbar-brand{
+	font-size: 25px;
+}
+
+.SuggestedVideos {
+	clear: both;
+	margin: auto;
+	padding-top: 30px;
+	width: 90%;
+}
+
+.active {
+	font-weight: bold;
+}
+
+/* Barra di ricerca a destra*/
+
+.search-bar {
+	float: right;
+}
+
+.container {
+	max-width: none;
+	width: 90%;
+}
+
+.tab-pane {
+	font-weight: normal;
+	font-size: 15px;
+}
+
+#myTabContent {
+	margin: 10px;
+}
+
+.card, center{
+	background-color: #FFFFFF;
+	cursor: pointer;
+	padding: 0;
+}
+
+.card-image-top{
+	z-index: 1;
+}
+
+.card-body{
+	z-index: 1;
+}
+
+.card-title {
+	font-size: 12px;
+	font-weight: bold;
+	color: #424242;
+}
+
+.card-text {
+	font-size: 10px;
+	font-weight: normal;
+	color: #616161;
+}
+
+.video-info-tabs {
+	padding: 8px;
+}
+
+.card {
+	margin: 10px;
+}
+
+.card-image-top{
+	border-radius: .25rem;
+}
+
+/*colori barra superiore*/
+.navbar-brand{
+	color: #FFFFFF !important;
+}
+
+.bg-light {
+    background-color: #000000!important;
+}
+
+.btn-outline-success{
+	color: #FFFFFF !important;
+	border-color: #FFFFFF !important;
+}
+
+.btn-outline-success:hover{
+	border-color: #FFFFFF !important;
+	background-color: #FFFFFF !important;
+	color: #000000 !important;
+}
+
+/* MIE MODIFICHE */
+
+.btn{
+	background-color: #FFFFFF !important;
+	border-color: #FFFFFF !important;
+}
+
+.dropdown-item{
+	word-wrap: break-word !important;
+	width: 90%;
+}
+
+hr{
+	margin: 0.35em;
+}
+
+.modal-dialog{
+	max-width: 600px;
+}
+
+.modal-title{
+	margin-left: 15px;
+}
+
+/* FINE MIE MODIFICHE */
+
+/*colori link*/
+
+.nav-link, a, .btn{
+	color: #062f4f !important;
+}
+
+.nav-link.active {
+    background-color: #062f4f !important;
+		color: #FFFFFF !important;
+}
+
+.nav-link.disabled {
+		color: #6885aa !important;
+}
+
+#recipeCarousel, #pills-wikipedia{
+	background-color: #E8ECEF;
+}
+
+
+/* cambio il colore alle freccie */
+
+.carousel-control-prev-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+}
+
+.carousel-control-next-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+}
+
+.navbar-toggler-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,<svg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'><path stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>") !important;
+}
+
+/* quando lo schermo è abbstanza piccolo posiziona al centro le card */
+
+@media (min-width: @screen-sm-min) {
+	.card {
+		margin: auto;
+	}
+}
+
+.modal a:hover {
+  cursor: pointer;
+/*  text-decoration: underline; */
+}

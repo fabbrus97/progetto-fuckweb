@@ -1,0 +1,6 @@
+html/json/globPop.JSON:{"site":"site1824.tw.cs.unibo.it/","recommender":"YYYYYY","lastWatched":"unknown","recommended":[]}
+html/js/sparql_query.js:    		url: 'http://site1824.tw.cs.unibo.it/api/spotify/infocanzone?video=' + videoname,
+html/js/sparql_query.js.old:    		//url: 'http://site1824.tw.cs.unibo.it/api/spotify/infocanzone?video=' + videoname,
+html/js/youtube_fetch.js:				url: "http://site1824.tw.cs.unibo.it/api/spotify/videoInfo?video=" + escape(current_video),
+html/old/index.html:			'Error loading new content, try loading <a href="http://site1824.tw.cs.unibo.it?v=Q4bsDgZa4ns">this</a> page';
+html/globPop.JSON:{"site":"site1824.tw.cs.unibo.it/","recommender":"YYYYYY","lastWatched":"unknown","recommended":[]}

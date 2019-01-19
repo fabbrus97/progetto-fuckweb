@@ -1,0 +1,99 @@
+<html>
+
+<head>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        //async request to the url -> print the result
+        function httpGetAsync(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = showData;
+            xmlHttp.open("GET", theUrl, true);
+            xmlHttp.setRequestHeader('Cache-Control', 'no-cache');
+            xmlHttp.send(null);
+            /*
+            $.ajax({
+                url: theUrl,
+                data: {
+                    format: 'json'
+                },
+                error: function() {
+                    document.write("error");
+                    window.location.href = this;
+                },
+                dataType: 'json',
+                success: function(data) {
+                    document.getElementById('toExp').innerHTML = JSON.stringify(data);
+                },
+                type: 'GET'
+            });*/
+            function showData(){
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    //query worked
+                    document.getElementById('toExp').innerHTML = xmlHttp.responseText;
+                }
+            }
+        }
+        //sparql query
+        var query = [
+            "PREFIX dbo: <http://dbpedia.org/ontology/>",
+            "SELECT ?album ?artist WHERE {",
+            "?album dbo:artist ?artist .",
+            "} LIMIT 10"
+        ].join(" ");
+        //url for the query
+        var url = "http://dbpedia.org/sparql";
+        var queryUrl = url + "?query=" + encodeURIComponent(query) +"&format=json";
+        //query call
+        //httpGetAsync(queryUrl);
+        /*
+        $.ajax({
+            url: "https://api.spotify.com/v1/search?q=the%20dark%20side%20of%20the%20moon&type=track&limit=1 ",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer BQCmQFDsnnrIWnqMFTU5-RQqRDw5dCbJqMz1BMrgQ66ns0foeQRio2xKx0iNUFFhFqeeMyaocrO7ona6X58"
+            },
+            error: function() {
+                document.write("error");
+                window.location.href = this;
+            },
+            dataType: 'json',
+            success: function(data) {
+                document.getElementById('toExp').innerHTML = JSON.stringify(data.tracks.items[0].album.name);
+            },
+            type: 'GET'
+        });
+        */
+
+        $.ajax({
+            type: "POST",
+            url: 'https://accounts.spotify.com/api/token',
+            header: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "x-requested-with, x-requested-by",
+                Authorization: 'Basic ' + "M2FhOGY3YWZiMmEzNDBmMDk5Mzg1ZDMyYTczY2EzNTQ6NDA3MTA2YmRiNDg5NDE1ZmFjNGM2MDA1MTQ3NGMxZDQ=",
+                'Content-Type' : 'application/x-www-form-urlencoded',
+            },
+            data: {
+                grant_type: 'client_credentials'
+            },
+            dataType: 'json',
+
+            error: function(data) {
+                document.getElementById('toExp').innerHTML = "error: " + JSON.stringify(data);
+            },
+            success: function(data) {
+                document.getElementById('toExp').innerHTML = JSON.stringify(data);
+            }
+        });
+
+
+        //"https://api.spotify.com/v1/search?q=tania&type=artist" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQA951A8ugx2LdvssC5i7W4JhDIRyM8eY4x378BbhQCjTUSUAoRQ50KaBBb4sOnjGkt4ur_96tq91tblNK4"
+    </script>
+</head>
+
+<body>
+    <div id="toExp"></div>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+$('document').ready(function(){
+  //invece che controllare automaticamente quali siti funzionano, l'ho fatto io per poi creare questo array
+  var sitesToVisit = ["http://site1828.tw.cs.unibo.it/globpop?id=YYYYYY", "http://site1838.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1839.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1846.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1847.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYYY"];
+  var numOfSites = sitesToVisit.length;
+  var suggested_videos_popularGlob = [];
+  var getMostViewed = function(currentSite, callback) {
+    $.getJSON(currentSite, function(data){
+      //a partire dal JSON, seleziono il video più visto di ogni sito
+      console.log(data);
+      var recommendedLength = data.recommended.length;
+      var mostViewed = {
+        image: "none",
+        videoID: "none",
+        timesWatched: "0",
+        title: "none",
+        reason: "none"
+      };
+      for(let i = 0; i < recommendedLength; i++) {
+        if((data.recommended[i].timesWatched > mostViewed.timesWatched) &&
+                      (typeof(data.recommended[i]) != null)) {
+          //aggiorno i campi di mostViewed
+          mostViewed.timesWatched = data.recommended[i].timesWatched;
+          //if-then-else per sopperire alla mancanza di coerenza nei JSON
+          if(data.recommended[i].videoId) {
+            mostViewed.videoID = data.recommended[i].videoId;
+          }
+          else {
+            mostViewed.videoID = data.recommended[i].videoID;
+          }
+        }
+      }
+
+      var URL = "https://www.googleapis.com/youtube/videos";
+      var options = {
+        part: "snippet",
+        key: key,
+        id: mostViewed.videoID
+      };
+      console.log("Video di cui prendo la thumbnail: " + mostViewed.videoID);
+      //a partire dall'id del video più visto, ne aggiorno la thumbnail, il titolo e il motivo del suggerimento
+      $.getJSON(URL, options, function(data){
+        console.log(data);
+        mostViewed.image = data.items[0].snippet.thumbnails.default.medium.url;
+        mostViewed.title = data.items[0].snippet.title;
+      });
+      callback(mostViewed, currentSite); 
+    });
+  }
+
+  var updateViews = function(videoToUpdate, currentSite) {
+    var id2find = videoToUpdate.videoID;
+    for(let i = 0; i < numOfSites; i++) {
+      //se il sito è quello da cui ho ottenuto il più visto, lo evito;
+      if(sitesToVisit[i] != currentSite) {
+        $.getJSON(sitesToVisit[i], function(data){
+          var recommendedLength = data.recommended.length;
+          for(let j = 0; j < recommendedLength; j++) {
+            //cerco il video di cui voglio aggiornare il conto delle views
+            if((id2find == data.recommended[i].videoId) || (id2find == data.recommended[j].videoID)) {
+              //aggiorno il conto delle sue views
+              videoToUpdate.timesWatched = videoToUpdate.timesWatched + data.recommended[j].timesWatched;
+            }
+          }
+        });
+      }
+      return videoToUpdate;
+    }
+    //una volta calcolate le views "globali", aggiorno il motivo della proposta nel recommender
+    videoToUpdate.reason = "Number of views: " + toString(videoToUpdate.timesWatched);
+    console.log(videoToUpdate);
+    return videoToUpdate;
+  }
+  $('#pills-popular-tab').on('click', function(){
+    console.log("Clicked on popular");
+    for(let i = 0; i < numOfSites; i++) {
+      //per ogni sito, trovo il video più visto e ne aggiorno le views aggiungendo quelle che lo stesso video ha negli altri siti
+      //var mostViewed = getMostViewed(sitesToVisit[i]);
+      suggested_videos_popularGlob.push(getMostViewed(sitesToVisit[i], updateViews));
+      // suggested_videos_popularGlob.push(updateViews(getMostViewed(sitesToVisit[i]), sitesToVisit[i]));
+      console.log(suggested_videos_popularGlob);
+      addYouTubeInformationsRefined(suggested_videos_popularGlob);
+    }
+  });
+      /*
+      currentSite = "http://site1828.tw.cs.unibo.it/globpop?id=YYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      currentSite = "http://site1838.tw.cs.unibo.it/globpop?id=YYYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      currentSite = "http://site1839.tw.cs.unibo.it/globpop?id=YYYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      currentSite = "http://site1846.tw.cs.unibo.it/globpop?id=YYYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      currentSite = "http://site1847.tw.cs.unibo.it/globpop?id=YYYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      currentSite = "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYYY";
+      suggested_videos_popularGlob.push(getMostViewed(currentSite));
+      addYouTubeInformationsRefined(suggested_videos_popularGlob);
+    */
+});
+
