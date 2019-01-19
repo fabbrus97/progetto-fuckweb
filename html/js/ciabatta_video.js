@@ -379,6 +379,7 @@ function changeButtonPopular(){
 
 function changeSuggestedVideos(index){
 	changeIndex(true);
+	changeButtonPopular();
 	switch (index) {
 		case 1:
 			current_category = 1;
@@ -406,17 +407,14 @@ function changeSuggestedVideos(index){
 			console.log("cat 5");
 			break;
 		case 50://Global absolute
-			changeButtonPopular();
 			document.getElementById("pills-popular-tab").classList.add("active");
 			current_category = 50;
 			break;
 		case 51://Local absolute
-			changeButtonPopular();
 			document.getElementById("pills-popular-tab-absloc").classList.add("active");
 			current_category = 51;
 			break;
 		case 52://Local relative
-		    changeButtonPopular();
 		    document.getElementById("pills-popular-tab-relloc").classList.add("active");
 		    current_category = 52;
 		    carica_video_popolarita_relativa();
