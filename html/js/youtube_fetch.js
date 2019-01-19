@@ -113,6 +113,9 @@ function searchRefineOneVideo(data, data_set, reason){
 		new_info.title = data.items[0].snippet.title;
 		new_info.reason = reason;
 		new_info.videoId = data.items[0].id.videoId;
+		if (!new_info.videoId){
+			new_info.videoId = data.items[0].id;
+		}
 		data_set.push(new_info);
 		addYouTubeInformationsRefined(data_set);
 	}else{
@@ -225,9 +228,6 @@ var showSingleVideoInfo = function(data){
 	getSongInfo(current_video, printOut, 1); //cerco artista, album... (funzione definita in sparql_query.js)
 	wikipedia(current_video);
 	load_comments();
-	if(!popstate) {
- 	    history.pushState(video_info,"", "");
-	}
 }
 
 function makeid() {
@@ -379,20 +379,19 @@ function getfvitali(){
 
 //History Browser Manipulation
 
+let video_boxes = Array.from(document.getElementsByClassName('card border-light mb-3'));
 
-
-var popstate = false;
-
+/*video_boxes.forEach(b => {
+	b.addEventListener('click', e => {
+		console.log("###### DEBUG ####### \n stiamo inserendo il video nella cronologia \n ######################### \n" + JSON.stringify(video_info))
+		console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
+		console.log("video vecchio: \n " + JSON.stringify(video_info))
+		history.pushState(video2insertInHistory, "", "#"+video_info.videoId)
+	})
+})
+*/
 window.addEventListener("popstate", e => {
-	console.log("� stato attivato un evento popstate; history.state: " + JSON.stringify(history.state));
-	popstate = true;
-	if (e != null && e.state!= null ){
-		let x = e.state;
-		console.log("Dovrei caricare " + JSON.stringify(x));
-		console.log("Devo caricare il video con id " + x.videoId + " e nome " + x.title);
-		changeVideo(x.videoId, x.image, x.title, x.reason, true);
-	} else
-		window.history.back();
-		console.log('e.state era null, non ho fatto niente')
-
+	console.log("è stato attivato un evento popstate");
+	console.log(JSON.stringify(e.state));
+	changeVideo(e.state.videoId, e.state.image, e.state.title, e.state.reason);
 });

@@ -118,11 +118,25 @@ function addYouTubeInformationsRefined(new_data) {
 	changeIndex(false);
 	let results = new_data.length;
 	console.log(new_data[0]);
+
 	for (let i = 0; i < 10 && i < results; i++) {
+		$("#video-suggestion-"+i).attr("onclick", "").unbind("click");
 		$("#video-suggestion-"+i).click(function(){
 			//changeIndex(true);
 			console.log(new_data[i].videoId);
+
+			var video2insertInHistory = {};
+			video2insertInHistory.videoId = new_data[i].videoId;
+			video2insertInHistory.image = new_data[i].image;
+			video2insertInHistory.reason = new_data[i].reason;
+			video2insertInHistory.title = new_data[i].title;
+			history.pushState(video2insertInHistory, "", "#"+video_info.videoId)
+			console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
+			console.log("video vecchio: \n " + JSON.stringify(video_info))
+
 			changeVideo(new_data[i].videoId, new_data[i].image, new_data[i].title, new_data[i].reason);
+
+
 		});
 		$("#image-suggestion-"+i.toString()).attr("src",new_data[i].image);
 		$("#title-suggestion-"+i.toString()).html(new_data[i].title);
@@ -392,3 +406,5 @@ function changeSuggestedVideos(index){
 
 	}
 }
+
+history.replaceState(video_info, '', '#'+video_info.videoId);
