@@ -368,7 +368,7 @@ function changeButtonPopular(){
 	document.getElementById("pills-recent-tab").classList.remove("active");
 	document.getElementById("pills-fvitali-tab").classList.remove("active");
 	document.getElementById("pills-similar-tab").classList.remove("active");
-	document.getElementById("pills-search-tab").cclassList.remove("active");
+	document.getElementById("pills-search-tab").classList.remove("active");
 	//document.getElementById("dropdownMenuLink").classList.add("active");
 }
 
