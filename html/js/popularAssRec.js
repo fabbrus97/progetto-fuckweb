@@ -1,4 +1,52 @@
 $('document').ready(function() {
+    var sitesToVisit = [
+    "http://site1829.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1828.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1838.tw.cs.unibo.it/globpop?id=YYYYYYY",
+    "http://site1839.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1846.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1822.tw.cs.unibo.it/globpop?id=YYYYYY ",
+    "http://site1847.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1831.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYY",
+    "http://site1848.tw.cs.unibo.it/globpop?id=YYYYYY"
+    ]
+    var suggestedVideos = new Array();
+    var videoInfo = {
+        videoId: "",
+        timesWatched: "",
+        reason: ""
+    };
+    for(let i = 0; i < sitesToVisit.length; i++) {
+        $.getJSON(sitesToVisit[i], function (data){
+            console.log("ECCO I DATI RICEVUTI: " + data);
+        })
+        .done(function(data) {
+            for(let j = 0; j < data.recommended.length; j++) {
+                if(data.recommended[j].videoID) {
+                    videoInfo.videoId = data.recommended[j].videoID;
+                }
+                else {
+                    videoInfo.videoId = data.recommended[j].videoId;
+                }
+                videoInfo.timesWatched = data.recommended[j].timesWatched;
+                videoInfo.reason = data.recommended[j].prevalentReason;
+                suggestedVideos.push(videoInfo);
+            }
+        })
+        .fail(function() {
+                console.log("JSON non ricvuto");
+        });
+        console.log("JSON ricevuto dal sito "+ sitesToVisit[i]+ "sito numero " + i);
+    }
+    console.log("ARRAY DEI VIDEO DA ORDINARE, POPOLARITA' ASSOLUTA GLOBALE");
+    console.log(suggestedVideos);
+    suggestedVideos.sort(function(a, b) { return b.timesWatched - a.timesWatched });
+    console.log("ARRAY DEI VIDEO ORDINATO, POPOLARITA' ASSOLUTA GLOBALE");
+
+});
+/*
+$('document').ready(function() {
     //invece che controllare automaticamente quali siti funzionano, l'ho fatto io per poi creare questo array
     var sitesToVisit = ["http://site1828.tw.cs.unibo.it/globpop?id=YYYYYY", "http://site1838.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1839.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1846.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1847.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYYY"];
     var numOfSites = sitesToVisit.length;
@@ -87,7 +135,7 @@ $('document').ready(function() {
             getMostViewed(sitesToVisit[i], updateViews);
         }
         console.log(suggested_videos_popularGlob);
-        
+
     });
 
     let arrived = 0;
@@ -115,6 +163,5 @@ $('document').ready(function() {
       suggested_videos_popularGlob.push(getMostViewed(currentSite));
       currentSite = "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYYY";
       suggested_videos_popularGlob.push(getMostViewed(currentSite));
-      addYouTubeInformationsRefined(suggested_videos_popularGlob);
-    */
-});
+      addYouTubeInformationsRefined(suggested_videos_popularGlob); });
+*/
