@@ -360,10 +360,26 @@ function getCookie(c_name) {
 
 //END OF COOKIE SECTION
 
+//deativate all highlighted buttons
+function changeButtonPopular(){
+	document.getElementById("pills-random-tab").classList.remove("active");
+	document.getElementById("pills-search-tab").classList.remove("active");
+	document.getElementById("pills-related-tab").classList.remove("active");
+	document.getElementById("pills-recent-tab").classList.remove("active");
+	document.getElementById("pills-fvitali-tab").classList.remove("active");
+	document.getElementById("pills-similar-tab").classList.remove("active");
+	document.getElementById("pills-search-tab").classList.remove("active");
+	document.getElementById("pills-popular-tab").classList.remove("active");
+	document.getElementById("pills-popular-tab-absloc").classList.remove("active");
+	document.getElementById("pills-popular-tab-relloc").classList.remove("active");
+	//document.getElementById("dropdownMenuLink").classList.add("active");
+}
+
 //VIDEO-SUGGESTION CATEGORIES
 
 function changeSuggestedVideos(index){
 	changeIndex(true);
+	changeButtonPopular();
 	switch (index) {
 		case 1:
 			current_category = 1;
@@ -386,14 +402,23 @@ function changeSuggestedVideos(index){
 			current_category = 4;
 			getRecentlyWatchedVideos(uc_value);
 			break;
-		case 5:
+			case 5:
 			current_category = 5;
 			console.log("cat 5");
 			break;
-		case 52:
-		  current_category = 52;
-		  carica_video_popolarita_relativa();
-		  break;
+		case 50://Global absolute
+			document.getElementById("pills-popular-tab").classList.add("active");
+			current_category = 50;
+			break;
+		case 51://Local absolute
+			document.getElementById("pills-popular-tab-absloc").classList.add("active");
+			current_category = 51;
+			break;
+		case 52://Local relative
+		    document.getElementById("pills-popular-tab-relloc").classList.add("active");
+		    current_category = 52;
+		    carica_video_popolarita_relativa();
+		    break;
 		case 6:
 			current_category = 6;
 			console.log("cat 6");
