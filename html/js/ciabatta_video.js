@@ -100,7 +100,7 @@ function changeContent(new_content) {
 			$('#pills-wikipedia-tab').addClass('disabled');
 		}
 	} else {
-		var er = 'Error loading new content, try loading <a href="http://localhost?v=Q4bsDgZa4ns">this</a> page';
+		var er = 'Error loading new content, try loading <a href="http://localhost:8000?v=Q4bsDgZa4ns">this</a> page';
 		$('#pills-description').html(er);
 		$('#pills-description-tab').addClass('disabled');
 		$('#pills-comments-tab').addClass('disabled');
@@ -131,8 +131,8 @@ function addYouTubeInformationsRefined(new_data) {
 			video2insertInHistory.reason = new_data[i].reason;
 			video2insertInHistory.title = new_data[i].title;
 			history.pushState(video2insertInHistory, "", "#"+video_info.videoId)
-			console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
-			console.log("video vecchio: \n " + JSON.stringify(video_info))
+			//console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
+			//console.log("video vecchio: \n " + JSON.stringify(video_info))
 
 			changeVideo(new_data[i].videoId, new_data[i].image, new_data[i].title, new_data[i].reason);
 
@@ -229,8 +229,8 @@ function viewedVideo() {
 	current_video_id = video_info.videoId;
 	current_title = video_info.title;
 	current_image = video_info.image;
-	popolarita_assoluta_locale();
 	popolarita_relativa();
+	popolarita_assoluta_locale();
 }
 
 //END OF IFRAME PLAYER

@@ -291,10 +291,10 @@ function getSuggestedVideos(force_search){
 	if(suggested_videos_similar.length >= 10 && !force_search){
 		addYouTubeInformationsRefined(suggested_videos_similar);
 	}else{
-		//alert("http://localhost:1824/api/spotify/videoInfo?video=" + escape(current_video));
+		//alert("http://localhost:8000:1824/api/spotify/videoInfo?video=" + escape(current_video));
 		$.ajax(
 			{
-				url: "http://localhost/api/spotify/videoInfo?video=" + escape(current_video),
+				url: "http://localhost:8000/api/spotify/videoInfo?video=" + escape(current_video),
 				success: function(result){
 					//alert(JSON.stringify(result));
 					if(result.songs.length >= 10)

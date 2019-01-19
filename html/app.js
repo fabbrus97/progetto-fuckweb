@@ -12,7 +12,7 @@ var fs = require('fs')
 var spotify = require('./node/spotify.js')
 
 var jsonPop = {
-        site: "localhost/",
+        site: "localhost:8000/",
         recommender: "YYYYYY",
         lastWatched: "unknown",
         recommended: []
@@ -333,11 +333,12 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
 	res.end()
       }else{
         parseddata = JSON.parse(data);
-         var i = 0; var flag = false;
+        var i = 0; var flag = false;
         while(i < parseddata.video.length && !flag){
           if (parseddata.video[i].id_vid_base == old){
             flag = true;
-            console.log("poprel: video " + old + " già esistente");
+            console.log("poprel: video " + old_title + " già esistente");
+            console.log("quindi devo inserire il video " + current_title + " come correlato di " + old_title)
           }
           i++;
         }
@@ -351,12 +352,14 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
         var x = 0; flag = false;
         while(x < parseddata.video[i].suggested.length && !flag){
           if (parseddata.video[i].suggested[x].id_vid_rec == newid){ //se lo trovo, aumento il contatore
+            console.log("A quanto pare, " + current_title + " era già correlato a " + old_title + "; aumento solo il contatore")
             flag = true;
             parseddata.video[i].suggested[x].counter++;
           }
           x++;
         }
         if (!flag){ //se non lo trovo, allora devo crearlo
+          console.log("A quanto pare, " + current_title + " non era già correlato a " + old_title + "; creo la correlazione ex novo")
           let string = { "id_vid_rec"  : newid, "current_title": current_title, "current_image": current_image, "counter" : 1 };
           parseddata.video[i].suggested.push(string);
         }
@@ -381,7 +384,8 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
         while(i < parseddata.video.length && !flag){
           if (parseddata.video[i].id_vid_base == old){
             flag = true;
-            console.log("poprel: video " + old + " già esistente");
+            console.log("poprel: video " + old_title + " già esistente");
+            console.log("non stavamo aggiugendo niente, ma solo cercando dei dati da leggere e inviare al client :-)")
           }
           i++;
         }
@@ -610,7 +614,7 @@ var server = http.createServer(function (req, res) {
         //aggiungo un array col primo elemento inizializzato a 0 all'array
         //e ritorno l'indice del nuovo elemento da usare come valore del cookie
         res.end(JSON.stringify(video_history.push(["0"]).toString()))
-        console.log(video_history);
+        //console.log(video_history);
       break;
       //aggiungo una canzone all'array
       case '/api/addSong': //uc_value & song_id
@@ -665,8 +669,9 @@ var server = http.createServer(function (req, res) {
          });
          //fine codice scritto da Liam
 	*/
-	console.log("VIDEO HISTORY");
+	/*console.log("VIDEO HISTORY");
         console.log(video_history);
+        */
         res.end('{"operation":"success"}')
       break;
       //ritorno le ultime 10 canzoni visualizzate
@@ -680,7 +685,7 @@ var server = http.createServer(function (req, res) {
       break;
       case '/populate':
         populateHistoryZero();
-        res.writeHead(302,  {Location: "http://localhost/"})
+        res.writeHead(302,  {Location: "http://localhost:8000/"})
         res.end();
       break;
       case '/api/poprel':
