@@ -379,17 +379,6 @@ function getfvitali(){
 
 //History Browser Manipulation
 
-let video_boxes = Array.from(document.getElementsByClassName('card border-light mb-3'));
-
-/*video_boxes.forEach(b => {
-	b.addEventListener('click', e => {
-		console.log("###### DEBUG ####### \n stiamo inserendo il video nella cronologia \n ######################### \n" + JSON.stringify(video_info))
-		console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
-		console.log("video vecchio: \n " + JSON.stringify(video_info))
-		history.pushState(video2insertInHistory, "", "#"+video_info.videoId)
-	})
-})
-*/
 window.addEventListener("popstate", e => {
 	console.log("è stato attivato un evento popstate");
 	console.log(JSON.stringify(e.state));
