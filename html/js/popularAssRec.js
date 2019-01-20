@@ -12,17 +12,15 @@ $('document').ready(function() {
     "http://site1848.tw.cs.unibo.it/globpop?id=YYYYYY"
     ]
     var suggestedVideos = new Array();
-    var videoInfo = {
-        videoId: "",
-        timesWatched: "",
-        reason: ""
-    };
     for(let i = 0; i < sitesToVisit.length; i++) {
         $.getJSON(sitesToVisit[i], function (data){
-            console.log("ECCO I DATI RICEVUTI: " + data);
-        })
-        .done(function(data) {
+            //console.log("ECCO I DATI RICEVUTI: " + JSON.stringify(data));
             for(let j = 0; j < data.recommended.length; j++) {
+                var videoInfo = {
+                    videoId: "",
+                    timesWatched: "",
+                    reason: ""
+                };
                 if(data.recommended[j].videoID) {
                     videoInfo.videoId = data.recommended[j].videoID;
                 }
@@ -30,22 +28,51 @@ $('document').ready(function() {
                     videoInfo.videoId = data.recommended[j].videoId;
                 }
                 videoInfo.timesWatched = data.recommended[j].timesWatched;
-                videoInfo.reason = data.recommended[j].prevalentReason;
+                videoInfo.reason = "This video was viewed: " + JSON.stringify(data.recommended[j].timesWatched) + " times";
                 suggestedVideos.push(videoInfo);
             }
         })
         .fail(function() {
-                console.log("JSON non ricvuto");
+                //console.log("JSON non ricevuto");
+        })
+        .done(function() {
+            if(i == sitesToVisit.length - 2) {
+                //console.log("Valore della i: " + i + " , valore di sitesToVisit.length: " + sitesToVisit.length);
+                suggestedVideos.sort(function(a, b) { return b.timesWatched - a.timesWatched });
+                //console.log("ARRAY DEI VIDEO ORDINATO");
+                console.log(suggestedVideos);
+                for(let y = suggestedVideos.length; y != 10; y--) {
+                    suggestedVideos.pop();
+                }
+                console.log("ARRAY CONTENENTE SOLO LA TOP 10: " + JSON.stringify(suggestedVideos));
+                url = "https://www.googleapis.com/youtube/v3/videos";
+                for(let x = 0; x < suggestedVideos.length; x++){
+                    var options = {
+                        part: "snippet",
+                        key: key,
+                        id: suggestedVideos[x].videoId
+                    };
+                    if(suggestedVideos.length == 10) {
+                        $.getJSON(url, options, function(data) {
+                            suggestedVideos[x].image = data.items[0].snippet.thumbnails.medium.url;
+                            suggestedVideos[x].title = data.items[0].snippet.title;
+                        });
+                    }
+                }
+            }
         });
-        console.log("JSON ricevuto dal sito "+ sitesToVisit[i]+ "sito numero " + i);
     }
-    console.log("ARRAY DEI VIDEO DA ORDINARE, POPOLARITA' ASSOLUTA GLOBALE");
-    console.log(suggestedVideos);
-    suggestedVideos.sort(function(a, b) { return b.timesWatched - a.timesWatched });
-    console.log("ARRAY DEI VIDEO ORDINATO, POPOLARITA' ASSOLUTA GLOBALE");
-
+    $("#pills-popular-tab").on("click", function() {
+        addYouTubeInformationsRefined(suggestedVideos);
+    });
 });
-/*
+    /*
+    for(let y = suggestedVideos.length; y != 10; y--) {
+        suggestedVideos.pop();
+    }
+    console.log("ARRAY CONTENENTE SOLO LA TOP 10: " + JSON.stringify(suggestedVideos));
+});
+
 $('document').ready(function() {
     //invece che controllare automaticamente quali siti funzionano, l'ho fatto io per poi creare questo array
     var sitesToVisit = ["http://site1828.tw.cs.unibo.it/globpop?id=YYYYYY", "http://site1838.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1839.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1846.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1847.tw.cs.unibo.it/globpop?id=YYYYYYY", "http://site1827.tw.cs.unibo.it/globpop?id=YYYYYYY"];
