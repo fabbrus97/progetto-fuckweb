@@ -39,7 +39,6 @@ $('document').ready(function(){
 //	$('#pills-comments-tab').on("click", function(){
 	function load_comments(){
 		$('#pills-comments').html("");
-		console.log("MI HAI CLICCATO");
 		var commentsURL = "https://www.googleapis.com/youtube/v3/commentThreads";
 		var currentVideo = video_info.videoId;
 		var optionsComments = {
@@ -50,8 +49,8 @@ $('document').ready(function(){
 			order: "relevance"
                 }
 		$.getJSON(commentsURL, optionsComments, function(data){
-			console.log("COMMENTI RELATTIVI AL VIDEO IN ESECUZIONE");
-			console.log(data);
+			//console.log("COMMENTI RELATTIVI AL VIDEO IN ESECUZIONE");
+			//console.log(data);
 			var newComments = [];
 
 			for(let i=0; i < data.items.length; i++){

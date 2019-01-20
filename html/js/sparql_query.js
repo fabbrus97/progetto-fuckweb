@@ -139,7 +139,7 @@ function getSongInfo(videoname, fun, display_error){ //questa funzione serve sia
   //out è una variabile booleana: se 1, stampa output su #pills-info, altrimenti restituiscilo solo.
   videoname = encodeURI(parseCurrentVideo(videoname));
   $.ajax({
-    		url: 'http://localhost/api/spotify/infocanzone?video=' + videoname,
+    		url: 'http://localhost:8000/api/spotify/infocanzone?video=' + videoname,
     success: function (data){
 	if(fun)
 	  fun(data);

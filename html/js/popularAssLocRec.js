@@ -2,7 +2,7 @@
 $('document').ready(function(){
 	function popolarita_assoluta_locale(){
 		var suggestedVideos = [];
-		var url = "http://localhost/globpop";
+		var url = "http://localhost:8000/globpop";
 		$.get(url, function(data) {
 			for(let i = 0; i < data.recommended.length; i++) {
 				var videoInfo = {};

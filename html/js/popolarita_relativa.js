@@ -14,8 +14,9 @@ function is_usable(id){
 }
 
 function popolarita_relativa(){
+  console.log("Ho chiamato popolarita_relativa, controllo se il video precedente è stato visualizzato e agisco di conseguenza")
   if (is_usable(video_precedente)){ // se il video è stato visualizzato nella sessione
-    var url = "http://localhost/api/poprel";
+    var url = "http://localhost:8000/api/poprel";
     url += "?old=" + video_precedente + "&newid=" + current_video_id;
     url += "&old_title=" + old_title + "&current_title=" + current_title;
     url += "&old_image=" + old_image + "&current_image=" + current_image;
@@ -35,7 +36,7 @@ function carica_video_popolarita_relativa(){
   var currentVideo = video_info.videoId;
   var info = {}; //json associato ad un singolo video - va caricato con le informazioni id, thumbnail...
 
-  let url = "http://localhost/api/poprel?old=" + currentVideo + "&newid=null";
+  let url = "http://localhost:8000/api/poprel?old=" + currentVideo + "&newid=null";
   $.get(url, function(data) {
     //successo
     let x = 0;
