@@ -350,7 +350,6 @@ function getfvitali(){
 	var videos = [];
 	var video_info = [];
 	$.get("http://site1825.tw.cs.unibo.it/TW/globpop",function(data){
-		let urlYT = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=1&id="
 		for(i in data.recommended){
 			let urlYT = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=1&id="
 			urlYT+= data.recommended[i].videoID;
