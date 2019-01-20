@@ -40,11 +40,11 @@ $('document').ready(function() {
                 //console.log("Valore della i: " + i + " , valore di sitesToVisit.length: " + sitesToVisit.length);
                 suggestedVideos.sort(function(a, b) { return b.timesWatched - a.timesWatched });
                 //console.log("ARRAY DEI VIDEO ORDINATO");
-                console.log(suggestedVideos);
+                //console.log(suggestedVideos);
                 for(let y = suggestedVideos.length; y != 10; y--) {
                     suggestedVideos.pop();
                 }
-                console.log("ARRAY CONTENENTE SOLO LA TOP 10: " + JSON.stringify(suggestedVideos));
+                //console.log("ARRAY CONTENENTE SOLO LA TOP 10: " + JSON.stringify(suggestedVideos));
                 url = "https://www.googleapis.com/youtube/v3/videos";
                 for(let x = 0; x < suggestedVideos.length; x++){
                     var options = {
