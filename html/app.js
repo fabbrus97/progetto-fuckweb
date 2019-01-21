@@ -11,12 +11,15 @@ var url = require('url')
 var fs = require('fs')
 var spotify = require('./node/spotify.js')
 
+
 var jsonPop = {
-        site: "localhost:8000/",
-        recommender: "YYYYYY",
-        lastWatched: "unknown",
-        recommended: []
-        };
+    site: "localhost:8000/",
+    recommender: "YYYYYY",
+    lastWatched: "unknown",
+    recommended: []
+};
+
+
 /*
 var jsonGlobPop = JSON.stringify(jsonPop);
 fs.writeFile('./globPop.JSON', jsonGlobPop, function(err) {
@@ -415,53 +418,90 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
   }
 }
 
-function updateGlobPopJSON(){
-         fs.readFile('./globPop.JSON', null, function(data, err) {
-                if(err) {
-                        return console.log(err);
-                }
-                else {
-                        jsonPop = JSON.parse(data);
-                        let index = jsonPop.recommended.indexOf(video_info.id);
-                        var now = new Date();
-                        //aggiorno l'ultima volta che il sito e' stato usato per vedere un video
-                        jsonPop.lastWatched = now.getUTCDate().toString() + "/" + now.getUTCMonth().toString() + "/" +
-                                now.getUTCFullYear().toString() + " at " + now.getUTCHours().toString() +
-                                ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
+function updateGlobPopJSON(current_video_id, response){
+     console.log("Sono dentro la funzione, l'id del video è" + JSON.stringify(current_video_id));
+     fs.readFile(__dirname + '/globPop.JSON', {encoding: "utf-8"},  function(err, data) {
+            if(err) {
+                    return console.log("Ho riscontrato un errore: " + err);
+            }
+            else {
+                    const buf1 = Buffer.from("Ho letto il file");
+                    const buf2 = Buffer.from("JSON aggiornato");
+                    console.log(buf1.toString());
+                    jsonPop = JSON.parse(data);
+                    //let index = jsonPop.recommended.indexOf(current_video_id);
+                    var now = new Date();
+                    var month = (now.getUTCMonth() + 1).toString();
+                    var hours = (now.getUTCHours() + 1).toString();
 
-                        if(index >= 0) { //se non e' la prima volta che un video viene visto
-                                jsonPop.recommended[index].lastSelected = now.getUTCDate().toString() + "/" + now.getUTCMonth().toString() + "/" +
-                                now.getUTCFullYear().toString() + " at " + now.getUTCHours().toString() +
-                                ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
-
-                                jsonPop.recommended[index].timesWatched++;
+                    jsonPop.lastWatched = now.getUTCDate().toString() + "/" + month + "/" +
+                                          now.getUTCFullYear().toString() + " at " + hours +
+                                         ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
+                    var modified = false;
+                    jsonPop.recommended = jsonPop.recommended.map(function(x) {
+                        if(x.videoId == current_video_id) {
+                            console.log("Video già visto, aggiorno le info");
+                            x.timesWatched++;
+                            x.prevalentReason = "This video was viewed " + x.timesWatched + " times";
+                            x.lastSelected = jsonPop.lastWatched;
+                            modified = true;
                         }
-                        else {
-                                var lastSel = now.getUTCDate().toString() + "/" + now.getUTCMonth().toString() + "/" +
-                                now.getUTCFullYear().toString() + " at " + now.getUTCHours().toString() +
-                                ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
+                        return x;
+                    });
+                    if(!modified) {
+                        console.log("video mai visto, lo aggiungo al json");
+                        var newVideo = {
+                                videoId: current_video_id,
+                                lastSelected: jsonPop.lastWatched,
+                                timesWatched: 1,
+                                prevalentReason: "This video was viewed once"
+                            };
+                            jsonPop.recommended.push(newVideo);
+                    }
+                    /*
+                    console.log("Indice del video: " + index);
+                    var now = new Date();
 
-                                var newVideo = {
-                                        videoId: video_info.id,
-                                        lastSelected: lastSel,
-					lastSelected: lastSel,
-                                        timesWatched: 1,
-                                        prevalentReason: video_info.reason
-                                };
+                    var month = (now.getUTCMonth() + 1).toString();
+                    var hours = (now.getUTCHours() + 1).toString();
+                    //aggiorno l'ultima volta che il sito e' stato usato per vedere un video
+                    jsonPop.lastWatched = now.getUTCDate().toString() + "/" + month + "/" +
+                            now.getUTCFullYear().toString() + " at " + hours +
+                            ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
 
-                                jsonPop.recommended.push(newElem);
-                        }
+                    if(index >= 0) { //se non e' la prima volta che un video viene visto
+                            console.log("video gia' stato visto, aggiorno le info");
+                            jsonPop.recommended[index].lastSelected = now.getUTCDate().toString() + "/" +
+                            month + "/" +
+                            now.getUTCFullYear().toString() + " at " + hours +
+                            ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
 
-                        JSON.stringify(jsonPop);
-                        fs.writeFile('./globPop.JSON', jsonPop, function(err) {
-                                console.log("JSON della popolarita' globale modificato");
-                                if(err) {
-                                        return console.log(err);
-                                }
-                        });
+                            jsonPop.recommended[index].timesWatched++;
+                            jsonPop.recommended[index].prevalentReason = "This video was viewed " +
+                            jsonPop.recommended[index].timesWatched;
+                    }
+                    else {
+                            console.log("video mai visto, creo le info");
+                            var lastSel = now.getUTCDate().toString() + "/" + month + "/" +
+                            now.getUTCFullYear().toString() + " at " + hours +
+                            ":" + now.getUTCMinutes().toString() + ":" + now.getUTCSeconds().toString();
 
-                }
-       });
+                            var newVideo = {
+                                    videoId: current_video_id,
+                                    lastSelected: lastSel,
+                                    timesWatched: 1,
+                                    prevalentReason: "This video was viewed once"
+                            };
+
+                            jsonPop.recommended.push(newVideo);
+                    }
+                    */
+                    jsonPop = JSON.stringify(jsonPop);
+                    console.log("aggiorno il json");
+                    fs.writeFile(__dirname + '/globPop.JSON', jsonPop, "utf-8");
+                    response.end(JSON.stringify(jsonPop));
+            }
+     });
 }
 
 
@@ -494,6 +534,10 @@ function infoCanzone(err, data, res){ //funzione simile a getSpotifyInfoOfTrack,
 
 var server = http.createServer(function (req, res) {
     //console.log("connected");
+    //res.setHeader('Access-Control-Allow-Origin', '*');
+    //res.setHeader('Access-Control-Allow-Origin', req.header.origin);
+
+
     if (req.method == 'GET') {
 		path = url.parse(req.url).pathname;
     var query = url.parse(req.url, true).query;
@@ -667,7 +711,7 @@ var server = http.createServer(function (req, res) {
 
            }
          });
-         //fine codice scritto da Liam
+         fine codice scritto da Liam
 	*/
 	/*console.log("VIDEO HISTORY");
         console.log(video_history);
@@ -698,10 +742,20 @@ var server = http.createServer(function (req, res) {
           poprel("error!", null, null, null, null, null, null, res);
         }
       break;
-      case '/api/globpop':
-	res.writeHead(200, {'Content-Type': 'application/json'});
-	updateGlobPopJSON();
-	res.end(JSON.stringify(jsonPop));
+            case '/api/globpop':
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                });
+                res.end(JSON.stringify(jsonPop));
+            break;
+      case '/api/localpop':
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        });
+        //res.writeHead("Access-Control-Allow-Origin": "*");
+        console.log("chiamo la funzione per aggiornare il JSON della popolarita' globale");
+        updateGlobPopJSON(escape(query.id), res);
       break;
 
 			//404
