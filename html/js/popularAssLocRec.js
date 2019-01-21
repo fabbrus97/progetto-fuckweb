@@ -17,8 +17,12 @@ function popolarita_assoluta_locale(){
             videoInfo.timesWatched = jsonData.recommended[i].timesWatched;
             video_pop_locale.push(videoInfo);
         }
+    }).done(function(){
+        video_pop_locale.sort(function(a, b) { return b.timesWatched - a.timesWatched });
+        for(let x = video_pop_locale.length; x != 10; x--) {
+            video_pop_locale.pop();
+        }
     });
-    video_pop_locale.sort(function(a, b) { return b.timesWatched - a.timesWatched });
 }
 
     /*
@@ -51,27 +55,28 @@ function popolarita_assoluta_locale(){
     */
 
 
-    $('#pills-popular-tab-absloc').on("click", function(){
-        var URL = "https://www.googleapis.com/youtube/v3/videos";
-        console.log("Video del recommender: " + JSON.stringify(video_pop_locale));
-        //video_pop_locale.sort(function(a, b) { return b.timesWatched - a.timesWatched });
-        for (let j = 0; j < video_pop_locale.length; j++) {
-            var options = {
-                part: "snippet",
-                key: key,
-                id: video_pop_locale[j].Id
-            };
-            //console.log("Video di cui prendo la thumbnail: " + suggestedVideos[j].videoId);
-            $.getJSON(URL, options, function(data) {
-                console.log("Dati restituti dall'API di youtube(popolarita' locale assoluta)" + data);
-                video_pop_locale[j].image = data.items[0].snippet.thumbnails.medium.url;
-                video_pop_locale[j].title = data.items[0].snippet.title;
-                if(j == video_pop_locale.length-1) {
-                    addYouTubeInformationsRefined(video_pop_locale);
-                }
-            });
-        }
-    });
+$('#pills-popular-tab-absloc').on("click", function(){
+    var URL = "https://www.googleapis.com/youtube/v3/videos";
+    console.log("Video del recommender: " + JSON.stringify(video_pop_locale));
+    //video_pop_locale.sort(function(a, b) { return b.timesWatched - a.timesWatched });
+    for (let j = 0; j < video_pop_locale.length; j++) {
+        var options = {
+            part: "snippet",
+            key: key,
+            id: video_pop_locale[j].Id
+        };
+        //console.log("Video di cui prendo la thumbnail: " + suggestedVideos[j].videoId);
+        $.getJSON(URL, options, function(data) {
+            //console.log("Dati restituti dall'API di youtube(popolarita' locale assoluta)" + data);
+            video_pop_locale[j].image = data.items[0].snippet.thumbnails.medium.url;
+            video_pop_locale[j].title = data.items[0].snippet.title;
+        }).done(function(){
+            if(j == video_pop_locale.length-1) {
+                addYouTubeInformationsRefined(video_pop_locale);
+            }
+        });
+    }
+});
 
 
 
