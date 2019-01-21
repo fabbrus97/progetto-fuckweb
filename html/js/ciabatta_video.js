@@ -203,7 +203,8 @@ var viewed = false;
 var time_out;
 function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.PLAYING && !done) {
-    time_out = setTimeout(viewedVideo, 15000);
+	  //should be 15
+    time_out = setTimeout(viewedVideo, 1000);
     done = true;
   }else if(event.data == YT.PlayerState.PAUSED && !viewed){
 		clearTimeout(time_out);
@@ -242,7 +243,7 @@ $('#dropdownUptime').click(()=>{
 
 async function asyncTimerUpdateCall() {
 	if($('#dropdownUptime').is(':focus')){
-		$.ajax({url: window.location.href.replace('#','') + "api/uptime", success: function(result){
+		$.ajax({url: 'api/uptime', success: function(result){
 		    $("#uptime-info").html(result);
 		}});
 		setTimeout(asyncTimerUpdateCall, 1000);
@@ -274,7 +275,7 @@ if(!uc_value){
 	$.ajax({
 		url : "api/createUser",
 		success : ((data)=>{
-			uc_value = (JSON.parse(data) - 1);
+			uc_value = (JSON.parse(data));
 			setCookie(uc_name, uc_value, 365);
 		}),
 		error : ((err)=>{

@@ -327,7 +327,7 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
     current_image = decodeURIComponent(current_image);
   if(old && newid!=null && !err){
     var parseddata;
-    fs.readFile('./json/poprel.json', null, function read(err, data){
+    fs.readFile(__dirname+'./json/poprel.json', null, function read(err, data){
       if(err) {
         console.log("API poprel errore: " + err);
 	res.end()
@@ -360,7 +360,7 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
           let string = { "id_vid_rec"  : newid, "current_title": current_title, "current_image": current_image, "counter" : 1 };
           parseddata.video[i].suggested.push(string);
         }
-        fs.writeFile('./json/poprel.json', JSON.stringify(parseddata), function after(err){
+        fs.writeFile(__dirname+'./json/poprel.json', JSON.stringify(parseddata), function after(err){
           if (err)
           console.log("Error while writing poprel.json (poprel): " + err);
           else
@@ -371,7 +371,7 @@ function poprel(err, old, newid, old_title, current_title, old_image, current_im
     });
   } else if (old && newid===null && !err){
     var rawdata; var parseddata;
-    fs.readFile('./json/poprel.json', null, function read(err, data){
+    fs.readFile(__dirname+'./json/poprel.json', null, function read(err, data){
       if(err) {
         console.log("API poprel errore: " + err);
         throw err;
@@ -490,6 +490,7 @@ function infoCanzone(err, data, res){ //funzione simile a getSpotifyInfoOfTrack,
 
 var server = http.createServer(function (req, res) {
     //console.log("connected");
+    res.setHeader('Access-Control-Allow-Headers', "*");
     if (req.method == 'GET') {
 		path = url.parse(req.url).pathname;
     var query = url.parse(req.url, true).query;
@@ -609,15 +610,12 @@ var server = http.createServer(function (req, res) {
         res.writeHead(200, { 'Content-Type': 'application/json' })
         //aggiungo un array col primo elemento inizializzato a 0 all'array
         //e ritorno l'indice del nuovo elemento da usare come valore del cookie
-        res.end(JSON.stringify(video_history.push(["0"]).toString()))
-        console.log(video_history);
+        res.end((video_history.length - 1).toString())
       break;
       //aggiungo una canzone all'array
       case '/api/addSong': //uc_value & song_id
         res.writeHead(200, { 'Content-Type': 'application/json' })
-	console.log("WARNING: length of video_history: " + video_history.length);
-	console.log("WARNING: value of query.uc_value: " + query.uc_value);
-        video_history[query.uc_value - 1].push(JSON.parse(query.song_info));
+        video_history[query.uc_value].push(JSON.parse(query.song_info));
 	//inizio codice scritto da Liam
 	/*
 	fs.readFile('./globPopJSON', null, function(data, err) {
