@@ -291,10 +291,10 @@ function getSuggestedVideos(force_search){
 	if(suggested_videos_similar.length >= 10 && !force_search){
 		addYouTubeInformationsRefined(suggested_videos_similar);
 	}else{
-		//alert("http://localhost:1824/api/spotify/videoInfo?video=" + escape(current_video));
+		//alert("http://localhost:8000:1824/api/spotify/videoInfo?video=" + escape(current_video));
 		$.ajax(
 			{
-				url: "http://localhost/api/spotify/videoInfo?video=" + escape(current_video),
+				url: "http://localhost:8000/api/spotify/videoInfo?video=" + escape(current_video),
 				success: function(result){
 					//alert(JSON.stringify(result));
 					if(result.songs.length >= 10)
@@ -350,7 +350,6 @@ function getfvitali(){
 	var videos = [];
 	var video_info = [];
 	$.get("http://site1825.tw.cs.unibo.it/TW/globpop",function(data){
-		let urlYT = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=1&id="
 		for(i in data.recommended){
 			let urlYT = "https://www.googleapis.com/youtube/v3/videos?key="+key+"&part=snippet&maxResults=1&id="
 			urlYT+= data.recommended[i].videoID;
@@ -379,17 +378,6 @@ function getfvitali(){
 
 //History Browser Manipulation
 
-let video_boxes = Array.from(document.getElementsByClassName('card border-light mb-3'));
-
-/*video_boxes.forEach(b => {
-	b.addEventListener('click', e => {
-		console.log("###### DEBUG ####### \n stiamo inserendo il video nella cronologia \n ######################### \n" + JSON.stringify(video_info))
-		console.log("video nuovo: \n " + JSON.stringify(video2insertInHistory))
-		console.log("video vecchio: \n " + JSON.stringify(video_info))
-		history.pushState(video2insertInHistory, "", "#"+video_info.videoId)
-	})
-})
-*/
 window.addEventListener("popstate", e => {
 	console.log("è stato attivato un evento popstate");
 	console.log(JSON.stringify(e.state));
